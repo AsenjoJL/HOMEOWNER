@@ -1,0 +1,11 @@
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.csproj.AssemblyReference.cache
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\rpswa.dswa.cache.json
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.AssemblyInfoInputs.cache
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.AssemblyInfo.cs
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.csproj.CoreCompileInputs.cache
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.RazorAssemblyInfo.cache
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.RazorAssemblyInfo.cs
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Release\net8.0\HOMEOWNER.sourcelink.json

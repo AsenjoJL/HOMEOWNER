@@ -4,23 +4,29 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// ✅ Allow environment variables like env:Twilio__AccountSid
+builder.Configuration.AddEnvironmentVariables();
+
+// ✅ Add MVC
 builder.Services.AddControllersWithViews();
 
+// ✅ Register your custom services
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
 
-// Add DbContext for database connection
+// ✅ Register EF Core with SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HOME_DB")));
 
-// Add session services
+// ✅ Session
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
-// Add authentication and session handling
+// ✅ Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -29,14 +35,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
 
-builder.Services.AddAuthorization(
-
-    );
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline
+// ✅ Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -47,20 +50,15 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-// Enable Session Middleware
-app.UseSession(); // ✅ Ensure session is enabled
-// Enable Authentication & Authorization
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-// Admin Panel Route
+// ✅ Route Config
 app.MapControllerRoute(
     name: "admin",
     pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}");
 
-// Default Route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
