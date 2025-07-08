@@ -1,0 +1,54 @@
+﻿<!-- Modal for Bill Management (Homeowners) -->
+<div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="billModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="billModalLabel">Manage Your Bill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="billForm">
+                    <div class="form-group">
+                        <label for="Amount">Amount</label>
+                        <input type="number" class="form-control" id="Amount" name="Amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="DueDate">Due Date</label>
+                        <input type="date" class="form-control" id="DueDate" name="DueDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="PaymentStatus">Payment Status</label>
+                        <select class="form-control" id="PaymentStatus" name="PaymentStatus" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="BillID" name="BillID">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Payment View (Admin) -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Payment Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Homeowner:</strong> <span id="paymentHomeowner"></span></p>
+                <p><strong>Amount Paid:</strong> <span id="paymentAmount"></span></p>
+                <p><strong>Payment Method:</strong> <span id="paymentMethod"></span></p>
+                <p><strong>Payment Date:</strong> <span id="paymentDate"></span></p>
+            </div>
+        </div>
+    </div>
+</div>

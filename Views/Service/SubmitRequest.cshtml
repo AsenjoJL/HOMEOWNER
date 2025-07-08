@@ -1,0 +1,248 @@
+﻿@model HOMEOWNER.Models.ViewModels.SubmitRequestViewModel
+
+@{
+    ViewData["Title"] = "Submit Request";
+}
+
+<!-- Modern Design with Gradient Background -->
+<div class="request-container">
+    <!-- Back to Dashboard Button -->
+    <div class="back-btn-container">
+        <a href="@Url.Action("Dashboard", "Homeowner")" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="request-content">
+        <div class="request-grid">
+            <!-- Left Section: Submit Service Request Form -->
+            <div class="request-form-section">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2><i class="fas fa-tools"></i> Submit Service Request</h2>
+                        <p>Fill out the form to submit a new service request</p>
+                    </div>
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success animated-fade">
+                            <i class="fas fa-check-circle"></i> @TempData["Success"]
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger animated-fade">
+                            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                        </div>
+                    }
+
+                    <!-- Service Request Form -->
+                    <form method="post" asp-action="SubmitRequest" asp-controller="Homeowner" class="service-form">
+                        <div class="form-group">
+                            <label asp-for="NewRequest.Category">
+                                <i class="fas fa-cogs"></i> Category
+                            </label>
+                            <div class="select-wrapper">
+                                <select asp-for="NewRequest.Category" class="form-control" required>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Security">Security</option>
+                                    <option value="Maintenance">Maintenance</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="NewRequest.Priority">
+                                <i class="fas fa-flag"></i> Priority
+                            </label>
+                            <div class="priority-buttons">
+                                <label class="priority-option">
+                                    <input type="radio" asp-for="NewRequest.Priority" value="Low" required>
+                                    <span class="priority-tag low">
+                                        <i class="fas fa-thermometer-empty"></i> Low
+                                    </span>
+                                </label>
+                                <label class="priority-option">
+                                    <input type="radio" asp-for="NewRequest.Priority" value="Medium">
+                                    <span class="priority-tag medium">
+                                        <i class="fas fa-thermometer-half"></i> Medium
+                                    </span>
+                                </label>
+                                <label class="priority-option">
+                                    <input type="radio" asp-for="NewRequest.Priority" value="High">
+                                    <span class="priority-tag high">
+                                        <i class="fas fa-thermometer-full"></i> High
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="NewRequest.Description">
+                                <i class="fas fa-pencil-alt"></i> Description
+                            </label>
+                            <textarea asp-for="NewRequest.Description" class="form-control" rows="5" placeholder="Please describe your request in detail..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Submit Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Section: My Service Requests -->
+            <div class="request-list-section">
+                <div class="list-card">
+                    <div class="list-header">
+                        <h2><i class="fas fa-clipboard-list"></i> My Service Requests</h2>
+                        <p>View and manage your existing requests</p>
+                    </div>
+
+                    @if (Model?.ServiceRequests == null || !Model.ServiceRequests.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>You have no service requests</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="request-table-container">
+                            <table class="request-table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-cogs"></i> Category</th>
+                                        <th><i class="fas fa-flag"></i> Priority</th>
+                                        <th><i class="fas fa-align-left"></i> Description</th>
+                                        <th><i class="fas fa-tasks"></i> Status</th>
+                                        <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                        <th><i class="fas fa-ellipsis-h"></i> Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var request in Model.ServiceRequests)
+                                    {
+                                        <tr class="request-row" id="row-@request.RequestID">
+                                            <td data-label="Category">@request.Category</td>
+                                            <td data-label="Priority">
+                                                @if (request.Priority == "High")
+                                                {
+                                                    <span class="priority-tag high"><i class="fas fa-thermometer-full"></i> @request.Priority</span>
+                                                }
+                                                else if (request.Priority == "Medium")
+                                                {
+                                                    <span class="priority-tag medium"><i class="fas fa-thermometer-half"></i> @request.Priority</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="priority-tag low"><i class="fas fa-thermometer-empty"></i> @request.Priority</span>
+                                                }
+                                            </td>
+                                            <td data-label="Description" class="description-cell">
+                                                @request.Description
+                                                <div class="reaction-buttons">
+                                                    <button class="reaction-btn" data-request-id="@request.RequestID" data-reaction="like">
+                                                        <i class="fas fa-thumbs-up"></i> <span class="like-count">0</span>
+                                                    </button>
+                                                    <button class="reaction-btn" data-request-id="@request.RequestID" data-reaction="dislike">
+                                                        <i class="fas fa-thumbs-down"></i> <span class="dislike-count">0</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td data-label="Status">
+                                                <span class="status-badge @request.Status.ToLower()">@request.Status</span>
+                                            </td>
+                                            <td data-label="Date">@request.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                            <td data-label="Actions">
+                                                @if (request.Status == "Pending")
+                                                {
+                                                    <button type="button" class="action-btn cancel-btn"
+                                                            onclick="confirmCancel(@request.RequestID, this)">
+                                                        <i class="fas fa-times"></i> Cancel
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="~/css/submit.css" asp-append-version="true">
+
+<script>
+    function confirmCancel(requestId, rowElement) {
+        if (!confirm("Are you sure you want to cancel this request? This action cannot be undone.")) {
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("CancelRequest", "Homeowner")",
+            data: { requestId: requestId },
+            success: function (response) {
+                if (response.success) {
+                    $(rowElement).closest('tr').fadeOut(300, function () {
+                        $(this).remove();
+                        // Show empty state if no requests left
+                        if ($('.request-row').length === 0) {
+                            $('.request-table-container').html(`
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>You have no service requests</p>
+                                </div>
+                            `);
+                        }
+                    });
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert("An error occurred. Please try again.");
+            }
+        });
+    }
+
+    // Add animation to form elements
+    $(document).ready(function() {
+        $('.form-group').each(function(i) {
+            $(this).delay(i * 100).animate({ opacity: 1 }, 200);
+        });
+
+        // Reaction button functionality (frontend only)
+        $('.reaction-btn').click(function() {
+            const btn = $(this);
+            const requestId = btn.data('request-id');
+            const reaction = btn.data('reaction');
+            const counter = btn.find('span');
+
+            // Toggle active state
+            btn.toggleClass('active');
+
+            // Update counter
+            let count = parseInt(counter.text()) || 0;
+            if (btn.hasClass('active')) {
+                count++;
+            } else {
+                count = Math.max(0, count - 1);
+            }
+            counter.text(count);
+
+            // In a real app, you would send this to the server:
+            // $.post("/reactions", { requestId, reaction, active: btn.hasClass('active') });
+        });
+    });
+</script>

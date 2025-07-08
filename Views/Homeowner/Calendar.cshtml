@@ -1,0 +1,190 @@
+﻿@{
+    ViewData["Title"] = "Calendar";
+    var serializedEvents = ViewBag.SerializedEvents;
+}
+
+<!-- Modern Design with Gradient Background -->
+<div class="calendar-container">
+    <!-- Header with Back Button -->
+    <div class="calendar-header">
+        <a href="@Url.Action("Dashboard", "Homeowner")" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <h1 class="calendar-title">
+            <i class="fas fa-calendar-alt"></i> Community Calendar
+        </h1>
+    </div>
+
+    <!-- Calendar Container -->
+    <div class="calendar-wrapper">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Modal for event details -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-category-badge" id="modalCategoryBadge"></div>
+                    <h3 class="modal-title" id="eventModalLabel"></h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="event-detail">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <h5>Description</h5>
+                            <p id="eventDescription"></p>
+                        </div>
+                    </div>
+                    <div class="event-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h5>Location</h5>
+                            <p id="eventLocation"></p>
+                        </div>
+                    </div>
+                    <div class="event-detail">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h5>Date & Time</h5>
+                            <p id="eventStartDate"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-btn secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <button type="button" class="modal-btn primary">
+                        <i class="fas fa-calendar-plus"></i> Add to Calendar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true">
+
+<!-- FullCalendar CSS & JS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- FontAwesome for Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<!-- Bootstrap 5 JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+
+        // Event category colors mapping
+        const categoryColors = {
+            "General": "#3b82f6",     // Blue
+            "Meeting": "#10b981",     // Green
+            "Conference": "#8b5cf6",  // Purple
+            "Workshop": "#f59e0b",    // Amber
+            "Webinar": "#0ea5e9",     // Sky blue
+            "Party": "#ec4899",       // Pink
+            "Training": "#ef4444"     // Red
+        };
+
+        // Make sure the serialized events are a valid JavaScript object
+        var eventsData = @Html.Raw(serializedEvents);
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+            },
+            views: {
+                timeGridWeek: {
+                    titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+                },
+                timeGridDay: {
+                    titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+                }
+            },
+            events: eventsData,
+            eventColor: function(info) {
+                return categoryColors[info.event.extendedProps.category] || '#64748b';
+            },
+            eventContent: function(arg) {
+                // Custom event content with icon
+                const categoryIcon = {
+                    "General": "fa-calendar",
+                    "Meeting": "fa-users",
+                    "Conference": "fa-comments",
+                    "Workshop": "fa-tools",
+                    "Webinar": "fa-desktop",
+                    "Party": "fa-glass-cheers",
+                    "Training": "fa-graduation-cap"
+                };
+
+                const icon = categoryIcon[arg.event.extendedProps.category] || "fa-calendar";
+
+                return {
+                    html: `<div class="fc-event-content">
+                        <i class="fas ${icon}"></i>
+                        <span>${arg.event.title}</span>
+                    </div>`
+                };
+            },
+            eventClick: function (info) {
+                // Get event details
+                const event = info.event;
+                const title = event.title || "No title";
+                const description = event.extendedProps.description || "No description provided";
+                const location = event.extendedProps.location || "Location not specified";
+                const category = event.extendedProps.category || "General";
+                const startDate = event.start ?
+                    event.start.toLocaleString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : "Date not specified";
+
+                // Set modal content
+                document.getElementById('eventModalLabel').textContent = title;
+                document.getElementById('eventDescription').textContent = description;
+                document.getElementById('eventLocation').textContent = location;
+                document.getElementById('eventStartDate').textContent = startDate;
+
+                // Set category badge
+                const badge = document.getElementById('modalCategoryBadge');
+                badge.textContent = category;
+                badge.style.backgroundColor = categoryColors[category] || '#64748b';
+
+                // Show modal
+                const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+                eventModal.show();
+            },
+            eventDidMount: function(info) {
+                // Add tooltip to events
+                if (info.event.extendedProps.description) {
+                    new bootstrap.Tooltip(info.el, {
+                        title: info.event.extendedProps.description,
+                        placement: 'top',
+                        trigger: 'hover',
+                        container: 'body'
+                    });
+                }
+            }
+        });
+
+        calendar.render();
+    });
+</script>

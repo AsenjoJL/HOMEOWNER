@@ -1,0 +1,248 @@
+﻿@model HOMEOWNER.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --accent-color: #4895ef;
+        --white: #ffffff;
+        --light-gray: #f8f9fa;
+        --dark-gray: #2b2d42;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f0f8ff, #d1e9ff);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+    }
+
+    .login-card {
+        background: var(--white);
+        border-radius: 8px; /* Square corners */
+        padding: 50px 40px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        border: 1px solid #e0e0e0;
+    }
+
+    .logo {
+        width: 120px;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        color: var(--dark-gray);
+        margin-bottom: 30px;
+        font-weight: 600;
+        font-size: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .input-container {
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        font-size: 18px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        font-size: 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px; /* Square corners */
+        background-color: var(--light-gray);
+        height: 50px;
+        box-sizing: border-box;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+    .login-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+    }
+
+        .remember-me input {
+            margin-right: 8px;
+            accent-color: var(--primary-color);
+        }
+
+    .forgot-password {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+    .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: var(--primary-color);
+        border: none;
+        border-radius: 6px; /* Square corners */
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+        .btn-login:hover {
+            background: var(--secondary-color);
+        }
+
+    .divider {
+        margin: 25px 0;
+        position: relative;
+        text-align: center;
+        color: #aaa;
+    }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #e0e0e0;
+            z-index: -1;
+        }
+
+        .divider span {
+            background-color: var(--white);
+            padding: 0 15px;
+        }
+
+    .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .social-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--white);
+        border: 1px solid #e0e0e0;
+        color: #555;
+        font-size: 18px;
+    }
+
+    .register-link {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #555;
+    }
+
+        .register-link a {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+            .register-link a:hover {
+                text-decoration: underline;
+            }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <img src="~/image1.png" alt="Logo" class="logo">
+        <h2>Login to Your Account</h2>
+
+        <form asp-action="Login" method="post">
+            <!-- Email Field -->
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input asp-for="Email" class="form-control" placeholder="Email Address">
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password">
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="login-options">
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <label for="rememberMe">Remember me</label>
+                </div>
+                <a asp-action="ForgotPassword" asp-controller="Account" class="forgot-password">Forgot password?</a>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="btn-login">
+                Log In
+            </button>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <!-- Social Login Options -->
+            <div class="social-login">
+                <a href="#" class="social-btn"><i class="fab fa-google"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-apple"></i></a>
+            </div>
+
+          
+        </form>
+    </div>
+</div>

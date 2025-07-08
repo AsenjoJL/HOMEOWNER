@@ -1,0 +1,40 @@
+﻿@model EventModel
+
+<div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addEventForm" asp-action="AddEvent" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEventModalLabel">Create Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="Title">Title</label>
+                        <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Description">Description</label>
+                        <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="EventDate">Event Date</label>
+                        <input type="datetime-local" class="form-control" id="EventDate" name="EventDate" value="@Model.EventDate.ToString("yyyy-MM-ddTHH:mm")" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Category">Category</label>
+                        <input type="text" class="form-control" id="Category" name="Category" value="@Model.Category" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Location">Location</label>
+                        <input type="text" class="form-control" id="Location" name="Location" value="@Model.Location" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Event</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

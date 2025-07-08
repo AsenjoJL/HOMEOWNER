@@ -1,0 +1,23 @@
+﻿@model HOMEOWNER.Models.CombinedAnnouncementViewModel
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Posted At</th>
+            <th>Urgent</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var announcement in Model.Announcements)
+        {
+            <tr>
+                <td>@announcement.Title</td>
+                <td>@announcement.Content</td>
+                <td>@announcement.PostedAt.ToString("MMM dd, yyyy hh:mm tt")</td>
+                <td>@(announcement.IsUrgent ? "Yes" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,58 @@
+﻿@model HOMEOWNER.Models.EventModel
+
+<!-- Partial view: used for both Add and Edit -->
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<!-- Form to handle both Add and Edit -->
+<form id="eventForm" asp-action="@((Model.EventID > 0) ? "EditEvent" : "AddEvent")" method="post" novalidate>
+    <input type="hidden" asp-for="EventID" />
+
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EventDate"></label>
+        <input asp-for="EventDate" type="datetime-local" class="form-control" value="@Model.EventDate.ToString("yyyy-MM-ddTHH:mm")" />
+        <span asp-validation-for="EventDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Category"></label>
+        <select asp-for="Category" class="form-control" asp-items="@(new SelectList(ViewBag.Categories as List<string>))">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Location"></label>
+        <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+
+    <!-- Dynamic Submit Button Text based on Edit or Add -->
+    <button type="submit" class="btn btn-success">
+        @if (Model.EventID > 0)
+        {
+            <text>Update Event</text>
+        }
+        else
+        {
+            <text>Add Event</text>
+        }
+    </button>
+
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,209 @@
+﻿@{
+    ViewData["Title"] = "Service Requests Management";
+}
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.1/css/all.min.css" rel="stylesheet">
+</head>
+
+<div class="dashboard-container">
+    <main class="content">
+        <header class="dashboard-header">
+            <h2><i class="fas fa-cogs"></i> Manage Service Requests</h2>
+        </header>
+
+        <div class="request-lists">
+            @foreach (var status in new[] { "Pending", "Completed" })
+            {
+                <h4><i class="fas fa-tasks"></i> @status Requests</h4>
+                <table class="request-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-id-badge"></i> Request ID</th>
+                            <th><i class="fas fa-tags"></i> Category</th>
+                            <th><i class="fas fa-align-left"></i> Description</th>
+                            <th><i class="fas fa-user"></i> Homeowner</th>
+                            <th><i class="fas fa-exclamation-circle"></i> Priority</th>
+                            <th><i class="fas fa-clipboard-check"></i> Status</th>
+                            <th><i class="fas fa-cogs"></i> Actions</th> <!-- Added an Actions column for icons -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model[status] ?? new List<HOMEOWNER.Models.ServiceRequest>())
+                        {
+                            @if (request.Category == (ViewData["Position"]?.ToString() ?? string.Empty))
+                            {
+                                <tr>
+                                    <td>@request.RequestID</td>
+                                    <td>@request.Category</td>
+                                    <td>@request.Description</td>
+                                    <td>@request.Homeowner?.FullName</td>
+                                    <td>@request.Priority</td>
+                                    <td>
+                                        @if (request.Status == "Pending")
+                                        {
+                                            <button class="update-btn" onclick="openModal(@request.RequestID)">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <div id="modal-@request.RequestID" class="modal">
+                                                <div class="modal-content">
+                                                    <span class="close-btn" onclick="closeModal(@request.RequestID)">&times;</span>
+                                                    <p>Are you sure you want to mark this request as <strong>Completed</strong>?</p>
+                                                    <button class="status-action" onclick="updateStatus(@request.RequestID)">
+                                                        <i class="fas fa-check-circle"></i> Mark as Completed
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success"><i class="fas fa-check"></i> Completed</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </main>
+</div>
+
+<style>
+    .request-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+        .request-table th, .request-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .request-table th {
+            background-color: #f4f4f4;
+        }
+
+        .request-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+    .update-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #007bff;
+        font-size: 18px;
+    }
+
+        .update-btn:hover {
+            color: #0056b3;
+        }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .status-action {
+        background: none;
+        border: none;
+        color: #28a745;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: underline;
+        font-size: 16px;
+    }
+
+        .status-action:hover {
+            color: #218838;
+        }
+
+    .badge {
+        padding: 5px 10px;
+        font-size: 12px;
+        border-radius: 20px;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+</style>
+
+<script>
+    function openModal(id) {
+        var modal = document.getElementById("modal-" + id);
+        modal.style.display = "block";
+    }
+
+    function closeModal(id) {
+        var modal = document.getElementById("modal-" + id);
+        modal.style.display = "none";
+    }
+
+    function updateStatus(id) {
+        // Submit form to mark the request as "Completed"
+        var form = document.getElementById("form-" + id);
+        if (!form) {
+            // Create form dynamically
+            form = document.createElement("form");
+            form.action = '@Url.Action("UpdateRequestStatus", "Staff")';
+            form.method = "post";
+            form.style.display = "none";
+            form.id = "form-" + id;
+
+            var input1 = document.createElement("input");
+            input1.type = "hidden";
+            input1.name = "requestId";
+            input1.value = id;
+
+            var input2 = document.createElement("input");
+            input2.type = "hidden";
+            input2.name = "status";
+            input2.value = "Completed";
+
+            form.appendChild(input1);
+            form.appendChild(input2);
+            document.body.appendChild(form);
+        }
+
+        form.submit();
+        closeModal(id);
+    }
+</script>

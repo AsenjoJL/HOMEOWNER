@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/homeowner.css" asp-append-version="true">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile-section">
+                <img src="@ViewData["ProfileImage"]" alt="Profile Image" class="profile-img" id="profile-img" />
+                <input type="file" id="upload-input" style="display: none;">
+                <button class="upload-btn" onclick="document.getElementById('upload-input').click()">
+                    <i class="fas fa-camera"></i> Change Photo
+                </button>
+                <p>@(User.Identity?.Name ?? "Guest")</p>
+            </div>
+
+            <!-- Sidebar Menu -->
+            <div class="sidebar-header">Dashboard</div>
+            <nav class="menu">
+                <a href="#">
+                    <i class="fas fa-cogs"></i> <span>Settings</span>
+                </a>
+                <a asp-controller="Reservation" asp-action="Index">
+                    <i class="fas fa-calendar-alt"></i> <span>Reservation</span>
+                </a>
+                <a asp-controller="Payment" asp-action="Index" class="nav-link">
+                    <i class="fas fa-credit-card"></i> <span>Payment</span>
+                </a>
+                <a asp-controller="Homeowner" asp-action="Calendar" class="nav-link">
+                    <i class="fas fa-calendar-day"></i> <span>Calendar</span>
+                </a>
+                <a asp-controller="Homeowner" asp-action="SubmitRequest">
+                    <i class="fas fa-wrench"></i> <span>Request Service</span>
+                </a>
+            </nav>
+
+            <!-- Documentation Section -->
+            <div class="sidebar-header">Documentation</div>
+            <nav class="menu">
+                <a href="#">
+                    <i class="fas fa-file-invoice"></i> <span>Payment History</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-receipt"></i> <span>Receipts</span>
+                </a>
+                <a href="/" class="d-flex align-items-center mb-3">
+                    <i class="fas fa-sign-out-alt"></i> <span>Log Out</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="page-title">
+                    <h1 id="content-title">Welcome to Your Dashboard</h1>
+                </div>
+                <div class="nav-actions">
+                    <button id="forum-btn" class="forum-btn">
+                        <i class="fas fa-comments"></i> Community Forum
+                    </button>
+                    <button id="back-to-dashboard-btn" class="forum-btn" style="display: none;">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div id="dynamic-content">
+                <!-- Welcome Box -->
+                <div class="content-box">
+                    <h2>Hello, @(User.Identity?.Name ?? "User")!</h2>
+                    <p class="intro">Here you can manage your reservations, payments, and much more. Stay on top of your homeownership activities with our comprehensive dashboard tools and features.</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card reservations">
+                        <h3>Reservations</h3>
+                        <p>Pending:</p>
+                        <span class="stat-value">5</span>
+                    </div>
+                    <div class="stat-card payments">
+                        <h3>Payments</h3>
+                        <p>Pending:</p>
+                        <span class="stat-value">$200</span>
+                    </div>
+                    <div class="stat-card requests">
+                        <h3>Requests</h3>
+                        <p>Open:</p>
+                        <span class="stat-value">2</span>
+                    </div>
+                </div>
+
+                <!-- Call to Action Button -->
+                <a href="#" class="cta-btn">
+                    <i class="fas fa-rocket"></i> Explore More Features
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Simple animation for sidebar menu items
+        document.querySelectorAll('.menu a').forEach((item, index) => {
+            item.style.transitionDelay = `${index * 0.05}s`;
+        });
+
+        // Profile image upload preview
+        document.getElementById('upload-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profile-img').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Forum button functionality
+        $(document).ready(function() {
+            // Load forum content when button is clicked
+            $('#forum-btn').click(function() {
+                $.ajax({
+                    url: '/Forum/Embedded',
+                    type: 'GET',
+                    success: function(data) {
+                        $('#dynamic-content').html(data);
+                        $('#content-title').text('Community Forum');
+                        $('#forum-btn').hide();
+                        $('#back-to-dashboard-btn').show();
+                        initializeForumScripts();
+                    },
+                    error: function() {
+                        alert('Error loading forum content');
+                    }
+                });
+            });
+
+            // Back to dashboard button
+            $('#back-to-dashboard-btn').click(function() {
+                location.reload(); // Or load default dashboard content via AJAX
+            });
+
+            // Handle forum post submissions
+            $(document).on('submit', '#post-form', function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '/Forum/CreatePost',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function() {
+                        $('#forum-btn').click(); // Refresh forum content
+                    },
+                    error: function() {
+                        alert('Error submitting post');
+                    }
+                });
+            });
+        });
+
+        function initializeForumScripts() {
+            // Toggle comment section
+            $('.btn-comment-toggle').click(function() {
+                const postCard = $(this).closest('.forum-post-card');
+                postCard.find('.comments-section, .comment-form').collapse('toggle');
+            });
+
+            // File upload preview
+            $('.file-upload-input').change(function() {
+                const fileName = $(this).val().split('\\').pop();
+                if (fileName) {
+                    $(this).siblings('.file-upload-preview').html(
+                        `<i class="fas fa-check-circle text-success"></i> ${fileName}`
+                    );
+                }
+            });
+
+            // Smooth animations
+            $('.forum-post-card').hover(
+                function() {
+                    $(this).addClass('shadow-lg');
+                },
+                function() {
+                    $(this).removeClass('shadow-lg');
+                }
+            );
+        }
+    </script>
+</body>
+</html>

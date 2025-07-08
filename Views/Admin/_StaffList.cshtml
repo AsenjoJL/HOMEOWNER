@@ -1,0 +1,25 @@
+﻿@model List<HOMEOWNER.Models.Staff>
+
+@if (Model == null || !Model.Any())
+{
+    <tr>
+        <td colspan="5" class="text-center text-muted py-3">No staff members found.</td>
+    </tr>
+}
+else
+{
+    @foreach (var staff in Model)
+    {
+        <tr>
+            <td class="align-middle text-center">@staff.FullName</td>
+            <td class="align-middle text-center">@staff.Email</td>
+            <td class="align-middle text-center">@staff.PhoneNumber</td>
+            <td class="align-middle text-center">@staff.Position</td>
+            <td class="align-middle text-center">
+                <a href="/Admin/EditStaff/@staff.StaffID" class="btn btn-primary btn-sm px-3">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </td>
+        </tr>
+    }
+}

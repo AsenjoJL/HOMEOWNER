@@ -1,0 +1,38 @@
+﻿@model List<HOMEOWNER.Models.Reservation>
+
+<h3><i class="fas fa-history"></i> Reservation History</h3>
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Facility</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Purpose</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Facility?.FacilityName</td>
+                    <td>@r.ReservationDate.ToShortDateString()</td>
+                    <td>@r.StartTime - @r.EndTime</td>
+                    <td>@r.Purpose</td>
+                    <td>
+                        <span class="badge badge-@(r.Status == "Expired" ? "secondary" : r.Status == "Canceled" ? "danger" : "success")">
+                            @r.Status
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No reservation history found.</p>
+}

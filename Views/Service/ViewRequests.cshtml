@@ -1,0 +1,21 @@
+﻿<table>
+    <thead>
+        <tr>
+            <th>Request ID</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var request in Model)
+        {
+            <tr>
+                <td>@request.RequestID</td>
+                <td>@request.Category</td>
+                <td>@request.Description</td>
+                <td>@request.Status</td> <!-- Display request status -->
+            </tr>
+        }
+    </tbody>
+</table>

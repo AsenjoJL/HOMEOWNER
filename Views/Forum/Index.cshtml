@@ -1,0 +1,226 @@
+﻿@model List<ForumPost>
+@{
+    ViewData["Title"] = "Community Forum";
+    var settings = ViewBag.CommunitySettings as CommunitySettings;
+}
+
+<style>
+    @Html.Raw(settings?.CustomCSS)
+</style>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="forum-wrapper" style="background-image: url('@settings?.BackgroundImageUrl')">
+    <div class="forum-overlay"></div>
+    <div class="container">
+        <!-- Back to Dashboard Button -->
+        <div class="text-end mb-4">
+            <a href="@Url.Action("Dashboard", "Homeowner")" class="btn btn-back">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Page Heading -->
+        <div class="text-center mb-5 animated fadeInDown">
+            <h1 class="forum-title">Community Forum</h1>
+            <p class="forum-subtitle">Engage in discussions, share ideas, and connect with your community.</p>
+            <div class="divider"></div>
+        </div>
+
+        <!-- Post Creation Form -->
+        <div class="card forum-post-card mb-5 animated fadeIn">
+            <div class="card-body p-4">
+                <h4 class="form-title"><i class="fas fa-pen-nib me-2"></i>Create a New Post</h4>
+                <form method="post" asp-action="CreatePost" enctype="multipart/form-data" class="mt-3">
+                    <div class="form-group mb-3">
+                        <input type="text" name="title" placeholder="Enter post title" class="form-control form-title-input" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <textarea name="content" rows="4" class="form-control form-content-input" placeholder="What's on your mind?" required></textarea>
+                    </div>
+
+                    <!-- Media Upload -->
+                    <div class="form-group mb-3">
+                        <label class="form-label"><i class="fas fa-image me-2"></i>Upload Image/Video</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" name="mediaFile" class="form-control file-upload-input" accept="image/*,video/*">
+                            <div class="file-upload-preview">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Drag & drop or click to browse</span>
+                                <small class="text-muted d-block">Supports JPG, PNG, GIF, MP4 (Max 5MB)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-post">
+                        <i class="fas fa-paper-plane me-2"></i> Post to Community
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Displaying Posts -->
+        @foreach (var post in Model)
+        {
+            <div class="card forum-post-card mb-4 animated fadeInUp">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div>
+                                <div class="user-name">@post.Homeowner?.FullName</div>
+                                <div class="post-time">Posted @post.CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")</div>
+                            </div>
+                        </div>
+                        <div class="post-actions">
+                            <button class="btn btn-sm btn-action"><i class="fas fa-ellipsis-h"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="post-title">@post.Title</h5>
+                    <p class="post-content">@post.Content</p>
+
+                    <!-- Display Media -->
+                    @if (!string.IsNullOrEmpty(post.MediaUrl))
+                    {
+                        <div class="post-media mt-3 mb-3">
+                            @if (post.MediaType == "image")
+                            {
+                                <img src="@post.MediaUrl" class="img-fluid rounded media-preview" alt="Post image"
+                                     onerror="this.style.display='none'">
+                            }
+                            else if (post.MediaType == "video")
+                            {
+                                <div class="video-container">
+                                    <video controls class="w-100 rounded media-preview">
+                                        <source src="@post.MediaUrl" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Reaction Section -->
+                    <div class="reactions-section mb-3">
+                        <form method="post" asp-action="AddReaction" class="d-inline">
+                            <input type="hidden" name="postId" value="@post.ForumPostID" />
+                            <div class="btn-group reaction-buttons" role="group">
+                                <button type="submit" name="reactionType" value="like" class="btn btn-sm btn-reaction" data-tooltip="Like">
+                                    <i class="fas fa-thumbs-up"></i> <span class="reaction-count">@post.Reactions?.Count(r => r.ReactionType == "like")</span>
+                                </button>
+                                <button type="submit" name="reactionType" value="love" class="btn btn-sm btn-reaction" data-tooltip="Love">
+                                    <i class="fas fa-heart"></i> <span class="reaction-count">@post.Reactions?.Count(r => r.ReactionType == "love")</span>
+                                </button>
+                                <button type="submit" name="reactionType" value="laugh" class="btn btn-sm btn-reaction" data-tooltip="Haha">
+                                    <i class="fas fa-laugh"></i> <span class="reaction-count">@post.Reactions?.Count(r => r.ReactionType == "laugh")</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-reaction btn-comment-toggle" data-tooltip="Comment">
+                                    <i class="fas fa-comment"></i> <span class="reaction-count">@post.Comments?.Count</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section mb-3 collapse">
+                        <h6 class="comments-header"><i class="fas fa-comments me-2"></i>Comments (@post.Comments?.Count)</h6>
+                        @if (post.Comments != null && post.Comments.Any())
+                        {
+                            foreach (var comment in post.Comments.OrderBy(c => c.CreatedAt))
+                            {
+                                <div class="comment-item mb-2 p-3">
+                                    <div class="d-flex">
+                                        <div class="user-avatar me-3">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="comment-user">@comment.Homeowner?.FullName</div>
+                                                <div class="comment-time small text-muted">
+                                                    @comment.CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")
+                                                </div>
+                                            </div>
+                                            <div class="comment-text">@comment.CommentText</div>
+                                            @if (!string.IsNullOrEmpty(comment.MediaUrl))
+                                            {
+                                                <div class="comment-media mt-2">
+                                                    <img src="@comment.MediaUrl" class="img-fluid rounded" style="max-height: 150px;"
+                                                         onerror="this.style.display='none'">
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="no-comments text-center py-3">
+                                <i class="far fa-comment-dots fa-2x mb-2"></i>
+                                <p>No comments yet. Be the first to comment!</p>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Comment Form -->
+                    <form method="post" asp-action="AddComment" enctype="multipart/form-data" class="comment-form mt-3 collapse">
+                        <input type="hidden" name="postId" value="@post.ForumPostID" />
+                        <div class="input-group mb-2">
+                            <input type="text" name="commentText" class="form-control comment-input" placeholder="Write a comment..." required />
+                            <button class="btn btn-comment" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <input type="file" name="mediaFile" class="form-control form-control-sm" accept="image/*">
+                            <small class="text-muted">Optional image attachment</small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="~/css/forum.css" asp-append-version="true">
+
+<script>
+    $(document).ready(function() {
+        // Toggle comment section
+        $('.btn-comment-toggle').click(function() {
+            const postCard = $(this).closest('.forum-post-card');
+            postCard.find('.comments-section, .comment-form').collapse('toggle');
+        });
+
+        // File upload preview
+        $('.file-upload-input').change(function() {
+            const fileName = $(this).val().split('\\').pop();
+            if (fileName) {
+                $(this).siblings('.file-upload-preview').html(
+                    `<i class="fas fa-check-circle text-success"></i> ${fileName}`
+                );
+            }
+        });
+
+        // Smooth animations
+        $('.forum-post-card').hover(
+            function() {
+                $(this).addClass('shadow-lg');
+            },
+            function() {
+                $(this).removeClass('shadow-lg');
+            }
+        );
+    });
+</script>
+

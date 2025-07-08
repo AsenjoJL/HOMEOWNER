@@ -1,0 +1,206 @@
+﻿@* Partial View for Dashboard *@
+@{
+    // Set default values if ViewBag values are null
+    var homeownerCount = ViewBag.HomeownerCount ?? 0;
+    var staffCount = ViewBag.StaffCount ?? 0;
+    var reservationCount = ViewBag.ReservationCount ?? 0;
+}
+
+<!-- Linking FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true">
+
+
+
+<div class="dashboard-section">
+    <h1 class="dashboard-title">Dashboard Overview</h1>
+
+    <div class="row">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="dashboard-card card-blue">
+                <i class="fas fa-users"></i>
+                <h5>Number of Owners</h5>
+                <h2>@homeownerCount</h2>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="dashboard-card card-orange">
+                <i class="fas fa-user-tie"></i>
+                <h5>Number of Staff</h5>
+                <h2>@staffCount</h2>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="dashboard-card card-teal">
+                <i class="fas fa-calendar-check"></i>
+                <h5>Reservations</h5>
+                <h2>@reservationCount</h2>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="dashboard-card card-grey">
+                <i class="fas fa-bell"></i>
+                <h5>Notifications</h5>
+                <h2>@reservationCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics & Recent Activity -->
+    <h3 class="section-header">Statistics & Activity</h3>
+
+    <div class="row mt-2">
+        <div class="col-lg-6 mb-4">
+            <div class="analytics-container">
+                <h5><i class="fas fa-chart-bar text-info me-2"></i>Facility Usage Analytics</h5>
+                <div class="chart-container">
+                    <canvas id="analyticsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="activity-container">
+                <h5><i class="fas fa-bolt text-warning me-2"></i>Recent Activity</h5>
+                <ul>
+                    <li>
+                        <i class="fas fa-user-plus text-primary"></i>
+                        New Home Owner registration
+                        <span>1 hour ago</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-calendar-check text-success"></i>
+                        Reservation created
+                        <span>2 hours ago</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-user-tie text-orange"></i>
+                        New Staff User added
+                        <span>3 hours ago</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-file-invoice-dollar text-info"></i>
+                        New payment received
+                        <span>5 hours ago</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load Chart.js first -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Wait for everything to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if canvas exists before trying to create chart
+        const canvas = document.getElementById('analyticsChart');
+        if (!canvas) {
+            console.error('Canvas element not found');
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Could not get canvas context');
+            return;
+        }
+
+        try {
+            // Gradient for chart bars
+            const gradient1 = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient1.addColorStop(0, 'rgba(52, 152, 219, 0.9)');
+            gradient1.addColorStop(1, 'rgba(41, 128, 185, 0.7)');
+
+            const gradient2 = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient2.addColorStop(0, 'rgba(243, 156, 18, 0.9)');
+            gradient2.addColorStop(1, 'rgba(230, 126, 34, 0.7)');
+
+            const gradient3 = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient3.addColorStop(0, 'rgba(46, 204, 113, 0.9)');
+            gradient3.addColorStop(1, 'rgba(39, 174, 96, 0.7)');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Swimming Pool', 'Tennis Court', 'Function Room'],
+                    datasets: [{
+                        label: 'Usage Level',
+                        data: [75, 55, 90],
+                        backgroundColor: [gradient1, gradient2, gradient3],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(46, 204, 113, 1)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 12,
+                        barThickness: 45,
+                        hoverBackgroundColor: [
+                            'rgba(52, 152, 219, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(46, 204, 113, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(44, 62, 80, 0.95)',
+                            titleFont: { family: 'Poppins', size: 14, weight: 'bold' },
+                            bodyFont: { family: 'Poppins', size: 12 },
+                            callbacks: {
+                                label: (context) => `Usage: ${context.raw}%`,
+                                labelColor: function(context) {
+                                    return {
+                                        borderColor: 'transparent',
+                                        backgroundColor: context.dataset.backgroundColor[context.dataIndex],
+                                        borderRadius: 6
+                                    };
+                                }
+                            },
+                            displayColors: false,
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)', drawBorder: false },
+                            ticks: { font: { family: 'Poppins', size: 12 }, color: '#7f8c8d' },
+                            title: {
+                                display: true,
+                                text: 'Utilization (%)',
+                                font: { family: 'Poppins', size: 13, weight: '500' },
+                                color: '#2c3e50',
+                                padding: {top: 0, left: 0, right: 0, bottom: 10}
+                            }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { font: { family: 'Poppins', size: 12, weight: '500' }, color: '#2c3e50' }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart',
+                        delay: 500
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error initializing chart:', error);
+        }
+    });
+</script>

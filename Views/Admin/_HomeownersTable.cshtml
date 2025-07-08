@@ -1,0 +1,18 @@
+﻿@model List<Homeowner>
+
+<tbody id="homeownerTableBody">
+    @foreach (var owner in Model)
+    {
+        <tr>
+            <td>@owner.FullName</td>
+            <td>@owner.Email</td>
+            <td>@owner.Address</td>
+            <td>@owner.ContactNumber</td>
+            <td>@owner.BlockLotNumber</td>
+            <td>@owner.Role</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@owner.HomeownerID" class="btn btn-primary btn-sm">✏️</a>
+            </td>
+        </tr>
+    }
+</tbody>

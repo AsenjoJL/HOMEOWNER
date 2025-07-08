@@ -1,0 +1,394 @@
+﻿@model List<Homeowner>
+
+<style>
+    /* Main Color Scheme */
+    :root {
+        --primary-color: #4361ee;
+        --primary-hover: #3a56d4;
+        --secondary-color: #3f37c9;
+        --light-bg: #f8f9fa;
+        --dark-text: #212529;
+        --light-text: #6c757d;
+        --border-color: #e9ecef;
+        --success-color: #4cc9f0;
+        --white: #ffffff;
+    }
+
+    /* Card Styling */
+    .management-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Header Section */
+    .header-section {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .page-title {
+        color: var(--dark-text);
+        font-weight: 600;
+        font-size: 1.5rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        font-family: 'Segoe UI Semibold', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+        .page-title i {
+            color: var(--primary-color);
+            margin-right: 12px;
+            font-size: 1.3rem;
+        }
+
+    /* Search and Button Container */
+    .action-container {
+        display: flex;
+        gap: 12px;
+    }
+
+    /* Search Input */
+    .search-container {
+        position: relative;
+        width: 250px;
+    }
+
+    .search-input {
+        padding-left: 40px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        height: 40px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+        }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--light-text);
+        z-index: 10;
+    }
+
+    /* Primary Button */
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary-custom i {
+            margin-right: 8px;
+        }
+
+    /* Table Styling */
+    .table-container {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 1rem;
+    }
+
+        .data-table thead th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 500;
+            padding: 12px 16px;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .data-table thead th:first-child {
+                border-top-left-radius: 8px;
+            }
+
+            .data-table thead th:last-child {
+                border-top-right-radius: 8px;
+            }
+
+        .data-table th i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        .data-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            .data-table tbody tr:hover {
+                background-color: rgba(67, 97, 238, 0.05);
+                transform: translateX(2px);
+            }
+
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            color: var(--dark-text);
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    /* Action Buttons */
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background-color: var(--light-bg);
+        color: var(--primary-color);
+        transition: all 0.2s ease;
+        margin-right: 6px;
+    }
+
+        .action-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+
+    /* Modal Styling */
+    .modal-content {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 1.25rem 1.5rem;
+        border-bottom: none;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+        .modal-title i {
+            margin-right: 10px;
+        }
+
+    .btn-close {
+        filter: invert(1);
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+    }
+
+        .form-label i {
+            color: var(--primary-color);
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+    .form-control {
+        border-radius: 6px;
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+        }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 768px) {
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .action-container {
+            width: 100%;
+        }
+
+        .search-container {
+            width: 100%;
+        }
+
+        .table-container {
+            padding: 0 0.5rem 1rem;
+            overflow-x: auto;
+        }
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="card management-card">
+    <div class="header-section">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <h2 class="page-title"><i class="fas fa-users-cog"></i>Homeowner Management</h2>
+            <div class="action-container">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="form-control search-input" placeholder="Search homeowners...">
+                </div>
+                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
+                    <i class="fas fa-user-plus"></i> Add New
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="table data-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-user"></i> Name</th>
+                    <th><i class="fas fa-envelope"></i> Email</th>
+                    <th><i class="fas fa-map-marker-alt"></i> Address</th>
+                    <th><i class="fas fa-phone"></i> Contact</th>
+                    <th><i class="fas fa-th"></i> Block/Lot</th>
+                    <th><i class="fas fa-user-tag"></i> Role</th>
+                    <th><i class="fas fa-ellipsis-h"></i> Actions</th>
+                </tr>
+            </thead>
+            @await Html.PartialAsync("_homeownersTable", Model)
+        </table>
+    </div>
+</div>
+
+<!-- Add Owner Modal -->
+<div class="modal fade" id="addOwnerModal" tabindex="-1" aria-labelledby="addOwnerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-plus"></i>Add New Homeowner</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addOwnerForm" asp-controller="Admin" asp-action="AddOwner" method="post">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" class="form-control" name="FullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" class="form-control" name="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-phone"></i> Contact Number</label>
+                        <input type="text" class="form-control" name="ContactNumber">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> Address</label>
+                        <input type="text" class="form-control" name="Address" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-th"></i> Block/Lot Number</label>
+                        <input type="text" class="form-control" name="BlockLotNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" class="form-control" name="PasswordHash" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom"><i class="fas fa-save"></i> Save Owner</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#addOwnerForm").submit(function (event) {
+            event.preventDefault();
+            let formData = $(this).serialize();
+
+            $.post("/Admin/AddOwner", formData, function (response) {
+                if (response.success === false) {
+                    alert(response.message);
+                } else {
+                    let owner = response.homeowner;
+                    $("#homeownerTableBody").append(`
+                        <tr>
+                            <td class="align-middle">${owner.fullName}</td>
+                            <td class="align-middle">${owner.email}</td>
+                            <td class="align-middle">${owner.address}</td>
+                            <td class="align-middle">${owner.contactNumber}</td>
+                            <td class="align-middle">${owner.blockLotNumber}</td>
+                            <td class="align-middle">${owner.role}</td>
+                            <td class="align-middle">
+                                <a href="/Admin/Edit/${owner.homeownerID}" class="action-btn">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                    $("#addOwnerModal").modal("hide");
+                    $("#addOwnerForm")[0].reset();
+
+                    // Show success notification
+                    toastr.success('Homeowner added successfully!', 'Success', {
+                        positionClass: 'toast-top-right',
+                        progressBar: true,
+                        timeOut: 3000
+                    });
+                }
+            }).fail(function () {
+                toastr.error('Error saving homeowner. Please try again.', 'Error', {
+                    positionClass: 'toast-top-right',
+                    progressBar: true,
+                    timeOut: 3000
+                });
+            });
+        });
+
+        $("#searchInput").on("keyup", function () {
+            let value = $(this).val().toLowerCase();
+            $("#homeownerTableBody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>

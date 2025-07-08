@@ -1,0 +1,183 @@
+﻿@model List<Homeowner>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle d-flex align-items-center" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-2"></i> Admin Profile
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-edit me-2"></i>Upload Profile Picture</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Change Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="@Url.Action("Logout", "Account")"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="sidebar bg-dark">
+                <div class="text-center mb-4 pt-3">
+                    <img src="~/image1.png" alt="Admin Logo" class="img-fluid" style="max-width: 80%;">
+                </div>
+                <ul class="nav flex-column px-2">
+                    <!-- Dashboard Parent -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="@Url.Action("Dashboard", "Admin")">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <div class="collapse show" id="dashboardSubmenu">
+                            <ul class="nav flex-column ms-3">
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" data-url="@Url.Action("ManageOwners")">
+                                        <i class="fas fa-users"></i> Homeowner Management
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" data-url="@Url.Action("ManageStaff")">
+                                        <i class="fas fa-user-cog"></i> Staff Management
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" data-url="@Url.Action("ManageServiceRequests")">
+                                        <i class="fas fa-concierge-bell"></i> Manage Service Request
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" data-url="@Url.Action("CreateBilling", "Admin")">
+                                        <i class="fas fa-credit-card"></i> Payments
+                                    </a>
+                                </li>
+                                <!-- ✅ Announcements & Notifications -->
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" href="#" data-url="@Url.Action("AnnouncementList", "Admin")">
+                                        <i class="fas fa-bullhorn"></i> Announcements
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" data-url="@Url.Action("EventCalendar", "Admin")" href="#">
+                                        <i class="fas fa-calendar-alt"></i> Event
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" data-url="@Url.Action("ReservationManagement", "Admin")">
+                                        <i class="fas fa-calendar-check"></i> Reservation Management
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Reports & Analytics -->
+                    <li class="nav-item">
+                        <a class="nav-link disabled" tabindex="-1" aria-disabled="true">
+                            <i class="fas fa-chart-line"></i> Reports & Analytics
+                        </a>
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" data-url="@Url.Action("Analytics", "Admin")">
+                                    <i class="fas fa-chart-pie"></i> Analytics
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Logout -->
+                    <li class="nav-item mt-4">
+                        <a class="nav-link text-warning" asp-controller="Account" asp-action="Logout">
+                            <i class="fas fa-sign-out-alt"></i> Log out
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div id="mainContent" class="content-wrapper">
+                    @await Html.PartialAsync("_Dashboard")
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+                $(document).ready(function () {
+            // Handle menu link clicks
+            $(".menu-link").click(function (e) {
+                e.preventDefault();
+                var url = $(this).data("url");
+                if (url) {
+                    loadContent(url);
+                }
+            });
+
+            function loadContent(url) {
+                $("#mainContent").html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function (data) {
+                        $("#mainContent").hide().html(data).fadeIn(300);
+                        $(".nav-link").removeClass("active");
+                        $('[data-url="' + url + '"]').addClass("active");
+
+                        // Close sidebar on mobile after selection
+                        if ($(window).width() < 992) {
+                            $(".sidebar").removeClass("active");
+                            $(".main-content").removeClass("expanded");
+                        }
+                    },
+                    error: function (xhr) {
+                        $("#mainContent").html('<div class="alert alert-danger">Error loading content. Please try again.</div>');
+                    }
+                });
+            }
+
+            // Mobile sidebar toggle
+            $(".navbar-toggler").click(function() {
+                $(".sidebar").toggleClass("active");
+                $(".main-content").toggleClass("expanded");
+            });
+
+            // Close sidebar when clicking outside on mobile
+            $(document).click(function(e) {
+                if ($(window).width() < 992) {
+                    if (!$(e.target).closest('.sidebar').length &&
+                        !$(e.target).closest('.navbar-toggler').length &&
+                        $('.sidebar').hasClass('active')) {
+                        $(".sidebar").removeClass("active");
+                        $(".main-content").removeClass("expanded");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
