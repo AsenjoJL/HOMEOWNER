@@ -6,13 +6,16 @@ EXPOSE 80
 # Build the app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["HOMEOWNER.csproj", "./"]
+
+# Copy .csproj file and restore
+COPY ["HOMEOWNER/HOMEOWNER.csproj", "HOMEOWNER/"]
 RUN dotnet restore "HOMEOWNER/HOMEOWNER.csproj"
+
+# Copy everything else
 COPY . .
-WORKDIR "/src"
+
+WORKDIR "/src/HOMEOWNER"
 RUN dotnet publish "HOMEOWNER.csproj" -c Release -o /app/publish
-
-
 
 # Final runtime image
 FROM base AS final
