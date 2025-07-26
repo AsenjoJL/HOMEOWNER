@@ -8,7 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy .csproj file and restore
-COPY ["HOMEOWNER/HOMEOWNER.csproj", "HOMEOWNER/"]
+COPY ["HOMEOWNER.csproj", "./"]
 RUN dotnet restore "HOMEOWNER/HOMEOWNER.csproj"
 
 # Copy everything else
