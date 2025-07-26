@@ -469,7 +469,6 @@ C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\HOMEOWNER.csproj.Up2Date
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\HOMEOWNER.dll
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\refint\HOMEOWNER.dll
