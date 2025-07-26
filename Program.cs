@@ -12,9 +12,10 @@ builder.Services.AddControllersWithViews();
 
 
 
-// ✅ Register EF Core with SQL Server
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("HOME_DB")));
+    options.UseSqlServer(connectionString));
 
 // ✅ Session
 builder.Services.AddSession(options =>
