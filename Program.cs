@@ -10,9 +10,7 @@ builder.Configuration.AddEnvironmentVariables();
 // ✅ Add MVC
 builder.Services.AddControllersWithViews();
 
-// ✅ Register your custom services
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<ISmsService, SmsService>();
+
 
 // ✅ Register EF Core with SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

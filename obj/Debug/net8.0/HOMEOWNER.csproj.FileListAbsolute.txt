@@ -481,3 +481,4 @@ C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
 C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\John Lester\Desktop\HOMEOWNERSYSTEM\HOMEOWNER\HOMEOWNER\obj\Debug\net8.0\HOMEOWNER.sourcelink.json
